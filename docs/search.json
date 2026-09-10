@@ -4,7 +4,7 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site"
+    "text": "I was born in Victoria, BC, but my family moved to Vancouver two months after I was born, so I basically lived in Vancouver my whole life. I have worked part-time at Dollar Tree since grade 11. I went to elementary school and high school in Vancouver, then completed my undergraduate degree in computer science and business at SFU. The joint major gave me access to my major interests, and I was able to learn about software development and how businesses operate, as I one day want to own a business."
   },
   {
     "objectID": "index.html",
@@ -12,5 +12,26 @@
     "title": "Niroshan Benjamin",
     "section": "",
     "text": "My name is Niroshan, and I’m from Vancouver. I completed my undergraduate studies at SFU with a combined major in computing science and business. Towards the end of my degree, I started taking more data science courses, which were very interesting, so I decided to pursue the MDS program at UBC. I hope to eventually work as a product data scientist at Microsoft because I loved the office when I visited for a hackathon.\nThis is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  },
+  {
+    "objectID": "about.html#background",
+    "href": "about.html#background",
+    "title": "About",
+    "section": "",
+    "text": "I was born in Victoria, BC, but my family moved to Vancouver two months after I was born, so I basically lived in Vancouver my whole life. I have worked part-time at Dollar Tree since grade 11. I went to elementary school and high school in Vancouver, then completed my undergraduate degree in computer science and business at SFU. The joint major gave me access to my major interests, and I was able to learn about software development and how businesses operate, as I one day want to own a business."
+  },
+  {
+    "objectID": "about.html#why-data-science",
+    "href": "about.html#why-data-science",
+    "title": "About",
+    "section": "Why data science",
+    "text": "Why data science\nMy best friend, who I met on my first day at SFU, is a data science major, so being around him introduced me to data science. I decided to take an introductory data science class in undergrad, and the use of classifiers was so amazing to me, especially how one can use modelling to predict an outcome. I took further data science classes and really enjoyed them, so I decided to pursue the Master of Data Science program at UBC."
+  },
+  {
+    "objectID": "about.html#outside-of-data-science",
+    "href": "about.html#outside-of-data-science",
+    "title": "About",
+    "section": "Outside of data science",
+    "text": "Outside of data science\nMy favourite hobbies are playing and watching sports, specifically playing cricket and basketball. I play on a cricket team that runs during the summer, and last year I had the third most runs in the division. I also love listening to music and going to concerts. My favourite artist is Drake, and I have gone to several concerts for artists such as Drake, The Weeknd, J. Cole, Lil Tecca, PartyNextDoor, and Bryson Tiller. My favourite cuisine is Indian food, but I’m always open to trying new food spots. On the weekend, I usually meet up with a friend and either play cricket and get food or go for a run."
   }
 ]
