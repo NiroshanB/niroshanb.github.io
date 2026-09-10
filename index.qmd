@@ -10,7 +10,3 @@ about:
 
 
 My name is Niroshan, and I'm from Vancouver. I completed my undergraduate studies at SFU with a combined major in computing science and business. Towards the end of my degree, I started taking more data science courses, which were very interesting, so I decided to pursue the MDS program at UBC. I hope to eventually work as a product data scientist at Microsoft because I loved the office when I visited for a hackathon.
-
-This is a Quarto website.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
