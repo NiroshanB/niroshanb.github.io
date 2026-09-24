@@ -14,7 +14,8 @@ first published as an R package; I loaded it here with the
 This post is the same analysis as my R post, translated into Python with pandas and
 matplotlib. 
 
-Two of the penguins are missing their bill and body mass measurements.
+Two of the penguins are missing their bill and body mass measurements, so they
+do not appear in the figures below.
 
 ```{python}
 #| label: setup
