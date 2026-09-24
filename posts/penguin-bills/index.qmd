@@ -1,0 +1,109 @@
+---
+title: "Penguins Data R Analysis"
+author: "Niroshan Benjamin"
+date: 2026-09-23
+---
+
+Data: [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/), Palmer
+Station Antarctica LTER. The data ships with the `palmerpenguins` R package under a
+[CC0 licence](https://creativecommons.org/publicdomain/zero/1.0/).
+
+Cited as the package asks: Horst AM, Hill AP, Gorman KB (2020). *palmerpenguins:
+Palmer Archipelago (Antarctica) penguin data*. R package version 0.1.1.
+<https://allisonhorst.github.io/palmerpenguins/>.
+doi: [10.5281/zenodo.3960218](https://doi.org/10.5281/zenodo.3960218).
+
+The ggplot code in this post is adapted from work I did in DSCI 523 Lab 2, where the
+plotting template was provided as part of the lab. 
+
+Two of the penguins are missing their bill and body mass measurements, so they
+are dropped from the figures below.
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+```{r}
+#| label: species-summary
+
+pengSummary <- penguins |>
+  group_by(species) |>
+  summarise(count = n(),
+            median_bill_length_mm = median(bill_length_mm, na.rm = TRUE),
+            median_body_mass_g = median(body_mass_g, na.rm = TRUE))
+
+pengSummary
+```
+
+```{r}
+#| label: arrange-data
+
+pengArr <- penguins |>
+  arrange(desc(bill_length_mm))
+
+head(pengArr)
+```
+
+```{r}
+#| label: fig-arranged
+#| fig-cap: "Bill length against body mass, with species in the default alphabetical legend order."
+#| warning: false
+
+penguins_originalArr <- ggplot(data = pengArr, mapping = aes(x = bill_length_mm, 
+                                                           y = body_mass_g,
+                                                           colour = species)) +
+  geom_point(size = 2) +
+  xlab("Bill length (mm)") +
+  ylab("Body mass (g)") +
+  theme_bw() +
+  theme(text = element_text(size = 18))
+penguins_originalArr
+```
+
+```{r}
+#| label: reorder-factor
+
+pengFct  <- penguins |>
+  mutate(species = fct_rev(fct_reorder(species, body_mass_g, .na_rm = TRUE)))
+
+levels(pengFct$species)
+```
+
+```{r}
+#| label: fig-reordered
+#| fig-cap: "The same data after reversing the species factor levels, which changes the legend order and the colours."
+#| warning: false
+
+penguins_originalFct <- ggplot(data = pengFct, mapping = aes(x = bill_length_mm, 
+                                                             y = body_mass_g,
+                                                             colour = species)) +
+  geom_point(size = 2) +
+  xlab("Bill length (mm)") +
+  ylab("Body mass (g)") +
+  theme_bw() +
+  theme(text = element_text(size = 18))
+penguins_originalFct
+```
+
+## Findings
+
+Using group_by and summarise, I found the count and the median 'bill_length_mm' and
+'body_mass_g' for each species. 'Gentoo' had the highest median body mass at 5000 g,
+while 'Adelie' and 'Chinstrap' had the exact same median body mass of 3700 g.
+'Chinstrap' had the longest median bill length at 49.6 mm, which is longer than
+'Gentoo' even though 'Gentoo' is much heavier, so body mass and bill length do not
+increase together across species.
+
+Using the dplyr arrange function, I arranged the column 'bill_length_mm' in
+descending order, but it had no effect on the figure. I used fct_reorder to reorder
+the species based on 'body_mass_g', which also had no effect on the figure, so I
+used fct_rev, which reversed the species order. This led to the figure changing,
+with 'Gentoo' being the first species in the legend and having a red plot colour
+now. The data points on the plot remained the same, but the colour of the points
+changed. This is because factor levels are ordered alphabetically by default, and we
+can see that changing levels impacts analysis and visualization.

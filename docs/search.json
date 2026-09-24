@@ -4,7 +4,7 @@
     "href": "blog.html",
     "title": "Blog",
     "section": "",
-    "text": "My first weeks in MDS\n\n\n\n\n\n\n\n\nSep 9, 2026\n\n\nNiroshan Benjamin\n\n\n\n\n\nNo matching items"
+    "text": "Penguins Data R Analysis\n\n\n\n\n\n\n\n\nSep 23, 2026\n\n\nNiroshan Benjamin\n\n\n\n\n\n\n\n\n\n\n\n\nMy first weeks in MDS\n\n\n\n\n\n\n\n\nSep 9, 2026\n\n\nNiroshan Benjamin\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "index.html",
@@ -12,6 +12,20 @@
     "title": "Niroshan Benjamin",
     "section": "",
     "text": "My name is Niroshan, and I’m from Vancouver. I completed my undergraduate studies at SFU with a combined major in computing science and business. Towards the end of my degree, I started taking more data science courses, which were very interesting, so I decided to pursue the MDS program at UBC. I hope to eventually work as a product data scientist at Microsoft because I loved the office when I visited for a hackathon."
+  },
+  {
+    "objectID": "posts/penguin-bills/index.html",
+    "href": "posts/penguin-bills/index.html",
+    "title": "Penguins Data R Analysis",
+    "section": "",
+    "text": "Data: Palmer Penguins, Palmer Station Antarctica LTER. The data ships with the palmerpenguins R package under a CC0 licence.\nCited as the package asks: Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer Archipelago (Antarctica) penguin data. R package version 0.1.1. https://allisonhorst.github.io/palmerpenguins/. doi: 10.5281/zenodo.3960218.\nThe ggplot code in this post is adapted from work I did in DSCI 523 Lab 2, where the plotting template was provided as part of the lab.\nTwo of the penguins are missing their bill and body mass measurements, so they are dropped from the figures below.\nlibrary(tidyverse)\nlibrary(palmerpenguins)\npengSummary &lt;- penguins |&gt;\n  group_by(species) |&gt;\n  summarise(count = n(),\n            median_bill_length_mm = median(bill_length_mm, na.rm = TRUE),\n            median_body_mass_g = median(body_mass_g, na.rm = TRUE))\n\npengSummary\n\n# A tibble: 3 × 4\n  species   count median_bill_length_mm median_body_mass_g\n  &lt;fct&gt;     &lt;int&gt;                 &lt;dbl&gt;              &lt;dbl&gt;\n1 Adelie      152                  38.8               3700\n2 Chinstrap    68                  49.6               3700\n3 Gentoo      124                  47.3               5000\npengArr &lt;- penguins |&gt;\n  arrange(desc(bill_length_mm))\n\nhead(pengArr)\n\n# A tibble: 6 × 8\n  species   island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;     &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Gentoo    Biscoe           59.6          17                 230        6050\n2 Chinstrap Dream            58            17.8               181        3700\n3 Gentoo    Biscoe           55.9          17                 228        5600\n4 Chinstrap Dream            55.8          19.8               207        4000\n5 Gentoo    Biscoe           55.1          16                 230        5850\n6 Gentoo    Biscoe           54.3          15.7               231        5650\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\npenguins_originalArr &lt;- ggplot(data = pengArr, mapping = aes(x = bill_length_mm, \n                                                           y = body_mass_g,\n                                                           colour = species)) +\n  geom_point(size = 2) +\n  xlab(\"Bill length (mm)\") +\n  ylab(\"Body mass (g)\") +\n  theme_bw() +\n  theme(text = element_text(size = 18))\npenguins_originalArr\n\n\n\n\n\n\n\nFigure 1: Bill length against body mass, with species in the default alphabetical legend order.\npengFct  &lt;- penguins |&gt;\n  mutate(species = fct_rev(fct_reorder(species, body_mass_g, .na_rm = TRUE)))\n\nlevels(pengFct$species)\n\n[1] \"Gentoo\"    \"Chinstrap\" \"Adelie\"\npenguins_originalFct &lt;- ggplot(data = pengFct, mapping = aes(x = bill_length_mm, \n                                                             y = body_mass_g,\n                                                             colour = species)) +\n  geom_point(size = 2) +\n  xlab(\"Bill length (mm)\") +\n  ylab(\"Body mass (g)\") +\n  theme_bw() +\n  theme(text = element_text(size = 18))\npenguins_originalFct\n\n\n\n\n\n\n\nFigure 2: The same data after reversing the species factor levels, which changes the legend order and the colours."
+  },
+  {
+    "objectID": "posts/penguin-bills/index.html#findings",
+    "href": "posts/penguin-bills/index.html#findings",
+    "title": "Penguins Data R Analysis",
+    "section": "Findings",
+    "text": "Findings\nUsing group_by and summarise, I found the count and the median ‘bill_length_mm’ and ‘body_mass_g’ for each species. ‘Gentoo’ had the highest median body mass at 5000 g, while ‘Adelie’ and ‘Chinstrap’ had the exact same median body mass of 3700 g. ‘Chinstrap’ had the longest median bill length at 49.6 mm, which is longer than ‘Gentoo’ even though ‘Gentoo’ is much heavier, so body mass and bill length do not increase together across species.\nUsing the dplyr arrange function, I arranged the column ‘bill_length_mm’ in descending order, but it had no effect on the figure. I used fct_reorder to reorder the species based on ‘body_mass_g’, which also had no effect on the figure, so I used fct_rev, which reversed the species order. This led to the figure changing, with ‘Gentoo’ being the first species in the legend and having a red plot colour now. The data points on the plot remained the same, but the colour of the points changed. This is because factor levels are ordered alphabetically by default, and we can see that changing levels impacts analysis and visualization."
   },
   {
     "objectID": "posts/first-weeks/index.html",
