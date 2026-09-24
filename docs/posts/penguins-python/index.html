@@ -9,7 +9,7 @@
 <meta name="author" content="Niroshan Benjamin">
 <meta name="dcterms.date" content="2026-09-23">
 
-<title>Penguins Data R Analysis – Niroshan Benjamin</title>
+<title>Penguins Data Python Analysis – Niroshan Benjamin</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -66,7 +66,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -110,6 +110,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 <link rel="stylesheet" href="../../styles.css">
@@ -169,7 +172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Penguins Data R Analysis</h1>
+<h1 class="title">Penguins Data Python Analysis</h1>
 </div>
 
 
@@ -198,99 +201,211 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Data: <a href="https://allisonhorst.github.io/palmerpenguins/">Palmer Penguins</a>, Palmer Station Antarctica LTER. The data ships with the <code>palmerpenguins</code> R package under a <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 licence</a>.</p>
-<p>Cited as the package asks: Horst AM, Hill AP, Gorman KB (2020). <em>palmerpenguins: Palmer Archipelago (Antarctica) penguin data</em>. R package version 0.1.0. <a href="https://allisonhorst.github.io/palmerpenguins/" class="uri">https://allisonhorst.github.io/palmerpenguins/</a>. doi: <a href="https://doi.org/10.5281/zenodo.3960218">10.5281/zenodo.3960218</a>.</p>
-<p>The ggplot code in this post is adapted from work I did in DSCI 523 Lab 2, where the plotting template was provided as part of the lab.</p>
-<p>Two of the penguins are missing their bill and body mass measurements, so they are dropped from the figures below.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Data: <a href="https://allisonhorst.github.io/palmerpenguins/">Palmer Penguins</a>, Palmer Station Antarctica LTER, released under a <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 licence</a>. The dataset was first published as an R package; I loaded it here with the <a href="https://pypi.org/project/palmerpenguins/">palmerpenguins</a> Python package (version 0.1.6), a port of that original.</p>
+<p>This post is the same analysis as my R post, translated into Python with pandas and matplotlib.</p>
+<p>Two of the penguins are missing their bill and body mass measurements.</p>
+<div id="setup" class="cell" data-message="false" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> load_penguins()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pengSummary <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(species) <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>(),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">median_bill_length_mm =</span> <span class="fu">median</span>(bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">median_body_mass_g =</span> <span class="fu">median</span>(body_mass_g, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>pengSummary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 4
-  species   count median_bill_length_mm median_body_mass_g
-  &lt;fct&gt;     &lt;int&gt;                 &lt;dbl&gt;              &lt;dbl&gt;
-1 Adelie      152                  38.8               3700
-2 Chinstrap    68                  49.6               3700
-3 Gentoo      124                  47.3               5000</code></pre>
+<div id="cell-species-summary" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>peng_summary <span class="op">=</span> (</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    penguins</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">"species"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        count<span class="op">=</span>(<span class="st">"species"</span>, <span class="st">"size"</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        median_bill_length_mm<span class="op">=</span>(<span class="st">"bill_length_mm"</span>, <span class="st">"median"</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        median_body_mass_g<span class="op">=</span>(<span class="st">"body_mass_g"</span>, <span class="st">"median"</span>),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>peng_summary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="species-summary" class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">species</th>
+<th data-quarto-table-cell-role="th">count</th>
+<th data-quarto-table-cell-role="th">median_bill_length_mm</th>
+<th data-quarto-table-cell-role="th">median_body_mass_g</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Adelie</td>
+<td>152</td>
+<td>38.80</td>
+<td>3700.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Chinstrap</td>
+<td>68</td>
+<td>49.55</td>
+<td>3700.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Gentoo</td>
+<td>124</td>
+<td>47.30</td>
+<td>5000.0</td>
+</tr>
+</tbody>
+</table>
+
 </div>
 </div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pengArr <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(bill_length_mm))</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pengArr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 8
-  species   island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
-  &lt;fct&gt;     &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
-1 Gentoo    Biscoe           59.6          17                 230        6050
-2 Chinstrap Dream            58            17.8               181        3700
-3 Gentoo    Biscoe           55.9          17                 228        5600
-4 Chinstrap Dream            55.8          19.8               207        4000
-5 Gentoo    Biscoe           55.1          16                 230        5850
-6 Gentoo    Biscoe           54.3          15.7               231        5650
-# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
+</div>
+<div id="cell-sort-data" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>peng_sorted <span class="op">=</span> penguins.sort_values(<span class="st">"bill_length_mm"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>peng_sorted.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="sort-data" class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">species</th>
+<th data-quarto-table-cell-role="th">island</th>
+<th data-quarto-table-cell-role="th">bill_length_mm</th>
+<th data-quarto-table-cell-role="th">bill_depth_mm</th>
+<th data-quarto-table-cell-role="th">flipper_length_mm</th>
+<th data-quarto-table-cell-role="th">body_mass_g</th>
+<th data-quarto-table-cell-role="th">sex</th>
+<th data-quarto-table-cell-role="th">year</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">185</th>
+<td>Gentoo</td>
+<td>Biscoe</td>
+<td>59.6</td>
+<td>17.0</td>
+<td>230.0</td>
+<td>6050.0</td>
+<td>male</td>
+<td>2007</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">293</th>
+<td>Chinstrap</td>
+<td>Dream</td>
+<td>58.0</td>
+<td>17.8</td>
+<td>181.0</td>
+<td>3700.0</td>
+<td>female</td>
+<td>2007</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">253</th>
+<td>Gentoo</td>
+<td>Biscoe</td>
+<td>55.9</td>
+<td>17.0</td>
+<td>228.0</td>
+<td>5600.0</td>
+<td>male</td>
+<td>2009</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">339</th>
+<td>Chinstrap</td>
+<td>Dream</td>
+<td>55.8</td>
+<td>19.8</td>
+<td>207.0</td>
+<td>4000.0</td>
+<td>male</td>
+<td>2009</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">267</th>
+<td>Gentoo</td>
+<td>Biscoe</td>
+<td>55.1</td>
+<td>16.0</td>
+<td>230.0</td>
+<td>5850.0</td>
+<td>male</td>
+<td>2009</td>
+</tr>
+</tbody>
+</table>
+
 </div>
 </div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>penguins_originalArr <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> pengArr, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> bill_length_mm, </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                                                           <span class="at">y =</span> body_mass_g,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                                                           <span class="at">colour =</span> species)) <span class="sc">+</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Bill length (mm)"</span>) <span class="sc">+</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Body mass (g)"</span>) <span class="sc">+</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>))</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>penguins_originalArr</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div id="fig-arranged" class="quarto-float quarto-figure quarto-figure-center anchored">
+</div>
+<div id="cell-fig-sorted" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> species <span class="kw">in</span> <span class="bu">sorted</span>(peng_sorted[<span class="st">"species"</span>].unique()):</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    subset <span class="op">=</span> peng_sorted[peng_sorted[<span class="st">"species"</span>] <span class="op">==</span> species]</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    ax.scatter(subset[<span class="st">"bill_length_mm"</span>], subset[<span class="st">"body_mass_g"</span>], s<span class="op">=</span><span class="dv">20</span>, label<span class="op">=</span>species)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Bill length (mm)"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Body mass (g)"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, color<span class="op">=</span><span class="st">"lightgrey"</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>ax.set_axisbelow(<span class="va">True</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>ax.legend(title<span class="op">=</span><span class="st">"species"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-sorted" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-arranged-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-arranged-1.png" class="img-fluid figure-img" width="672">
+<div aria-describedby="fig-sorted-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-sorted-output-1.png" width="682" height="509" class="figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-arranged-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sorted-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Bill length against body mass, with species in the default alphabetical legend order.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pengFct  <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">species =</span> <span class="fu">fct_rev</span>(<span class="fu">fct_reorder</span>(species, body_mass_g, <span class="at">.na_rm =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(pengFct<span class="sc">$</span>species)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Gentoo"    "Chinstrap" "Adelie"   </code></pre>
+<div id="cell-reorder-species" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>species_order <span class="op">=</span> peng_summary.sort_values(<span class="st">"median_body_mass_g"</span>)[<span class="st">"species"</span>].tolist()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>species_order.reverse()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>species_order</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="reorder-species" class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>['Gentoo', 'Chinstrap', 'Adelie']</code></pre>
 </div>
 </div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>penguins_originalFct <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> pengFct, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> bill_length_mm, </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                                                             <span class="at">y =</span> body_mass_g,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                                                             <span class="at">colour =</span> species)) <span class="sc">+</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Bill length (mm)"</span>) <span class="sc">+</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Body mass (g)"</span>) <span class="sc">+</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>))</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>penguins_originalFct</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
+<div id="cell-fig-reordered" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> species <span class="kw">in</span> species_order:</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    subset <span class="op">=</span> peng_sorted[peng_sorted[<span class="st">"species"</span>] <span class="op">==</span> species]</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    ax.scatter(subset[<span class="st">"bill_length_mm"</span>], subset[<span class="st">"body_mass_g"</span>], s<span class="op">=</span><span class="dv">20</span>, label<span class="op">=</span>species)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Bill length (mm)"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Body mass (g)"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, color<span class="op">=</span><span class="st">"lightgrey"</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>ax.set_axisbelow(<span class="va">True</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>ax.legend(title<span class="op">=</span><span class="st">"species"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
 <div id="fig-reordered" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-reordered-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="index_files/figure-html/fig-reordered-1.png" class="img-fluid figure-img" width="672">
+<img src="index_files/figure-html/fig-reordered-output-1.png" width="682" height="509" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-reordered-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: The same data after reversing the species factor levels, which changes the legend order and the colours.
+Figure&nbsp;2: The same data after reordering the species by median body mass, heaviest first, which changes the legend order and the colours.
 </figcaption>
 </figure>
 </div>
@@ -298,8 +413,8 @@ Figure&nbsp;2: The same data after reversing the species factor levels, which ch
 </div>
 <section id="findings" class="level2">
 <h2 class="anchored" data-anchor-id="findings">Findings</h2>
-<p>Using group_by and summarise, I found the count and the median ‘bill_length_mm’ and ‘body_mass_g’ for each species. ‘Gentoo’ had the highest median body mass at 5000 g, while ‘Adelie’ and ‘Chinstrap’ had the exact same median body mass of 3700 g. ‘Chinstrap’ had the longest median bill length at 49.6 mm, which is longer than ‘Gentoo’ even though ‘Gentoo’ is much heavier, so body mass and bill length do not increase together across species.</p>
-<p>Using the dplyr arrange function, I arranged the column ‘bill_length_mm’ in descending order, but it had no effect on the figure. I used fct_reorder to reorder the species based on ‘body_mass_g’, which also had no effect on the figure, so I used fct_rev, which reversed the species order. This led to the figure changing, with ‘Gentoo’ being the first species in the legend and having a red plot colour now. The data points on the plot remained the same, but the colour of the points changed. This is because factor levels are ordered alphabetically by default, and we can see that changing levels impacts analysis and visualization.</p>
+<p>Using groupby and agg, I found the count and the median ‘bill_length_mm’ and ‘body_mass_g’ for each species. ‘Gentoo’ had the highest median body mass at 5000 g, while ‘Adelie’ and ‘Chinstrap’ had the exact same median body mass of 3700 g. ‘Chinstrap’ had the longest median bill length at 49.55 mm, which is longer than ‘Gentoo’ even though ‘Gentoo’ is much heavier, so body mass and bill length do not increase together across species. These are the same numbers I got in R, except that pandas printed 49.55 mm where R printed 49.6 mm, because R rounded the value for display.</p>
+<p>Using the pandas sort_values function, I sorted the column ‘bill_length_mm’ in descending order, but it had no effect on the figure. Python does not have factor levels, so instead I made a list of the species ordered by median ‘body_mass_g’ and reversed it, which is what fct_reorder and fct_rev did in R, and it gave the same order of ‘Gentoo’, ‘Chinstrap’, ‘Adelie’. I then looped through the species in that order. This led to the figure changing, with ‘Gentoo’ being the first species in the legend and having a blue plot colour now, and ‘Adelie’ changing from blue to green. The data points on the plot remained the same, but the colour of the points changed. This is because matplotlib assigns its colours in the order the species are plotted, and we can see that changing the order impacts analysis and visualization.</p>
 
 
 </section>

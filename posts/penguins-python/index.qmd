@@ -1,0 +1,121 @@
+---
+title: "Penguins Data Python Analysis"
+author: "Niroshan Benjamin"
+date: 2026-09-23
+---
+
+Data: [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/), Palmer
+Station Antarctica LTER, released under a
+[CC0 licence](https://creativecommons.org/publicdomain/zero/1.0/). The dataset was
+first published as an R package; I loaded it here with the
+[palmerpenguins](https://pypi.org/project/palmerpenguins/) Python package
+(version 0.1.6), a port of that original. 
+
+This post is the same analysis as my R post, translated into Python with pandas and
+matplotlib. 
+
+Two of the penguins are missing their bill and body mass measurements.
+
+```{python}
+#| label: setup
+#| message: false
+#| warning: false
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from palmerpenguins import load_penguins
+
+penguins = load_penguins()
+```
+
+```{python}
+#| label: species-summary
+
+peng_summary = (
+    penguins
+    .groupby("species")
+    .agg(
+        count=("species", "size"),
+        median_bill_length_mm=("bill_length_mm", "median"),
+        median_body_mass_g=("body_mass_g", "median"),
+    )
+    .reset_index()
+)
+
+peng_summary
+```
+
+```{python}
+#| label: sort-data
+
+peng_sorted = penguins.sort_values("bill_length_mm", ascending=False)
+
+peng_sorted.head()
+```
+
+```{python}
+#| label: fig-sorted
+#| fig-cap: "Bill length against body mass, with species in the default alphabetical legend order."
+
+fig, ax = plt.subplots(figsize=(8, 6))
+
+for species in sorted(peng_sorted["species"].unique()):
+    subset = peng_sorted[peng_sorted["species"] == species]
+    ax.scatter(subset["bill_length_mm"], subset["body_mass_g"], s=20, label=species)
+
+ax.set_xlabel("Bill length (mm)", fontsize=14)
+ax.set_ylabel("Body mass (g)", fontsize=14)
+ax.grid(True, color="lightgrey")
+ax.set_axisbelow(True)
+ax.legend(title="species", fontsize=12)
+plt.show()
+```
+
+```{python}
+#| label: reorder-species
+
+species_order = peng_summary.sort_values("median_body_mass_g")["species"].tolist()
+species_order.reverse()
+
+species_order
+```
+
+```{python}
+#| label: fig-reordered
+#| fig-cap: "The same data after reordering the species by median body mass, heaviest first, which changes the legend order and the colours."
+
+fig, ax = plt.subplots(figsize=(8, 6))
+
+for species in species_order:
+    subset = peng_sorted[peng_sorted["species"] == species]
+    ax.scatter(subset["bill_length_mm"], subset["body_mass_g"], s=20, label=species)
+
+ax.set_xlabel("Bill length (mm)", fontsize=14)
+ax.set_ylabel("Body mass (g)", fontsize=14)
+ax.grid(True, color="lightgrey")
+ax.set_axisbelow(True)
+ax.legend(title="species", fontsize=12)
+plt.show()
+```
+
+## Findings
+
+Using groupby and agg, I found the count and the median 'bill_length_mm' and
+'body_mass_g' for each species. 'Gentoo' had the highest median body mass at 5000 g,
+while 'Adelie' and 'Chinstrap' had the exact same median body mass of 3700 g.
+'Chinstrap' had the longest median bill length at 49.55 mm, which is longer than
+'Gentoo' even though 'Gentoo' is much heavier, so body mass and bill length do not
+increase together across species. These are the same numbers I got in R, except that
+pandas printed 49.55 mm where R printed 49.6 mm, because R rounded the value for
+display.
+
+Using the pandas sort_values function, I sorted the column 'bill_length_mm' in
+descending order, but it had no effect on the figure. Python does not have factor
+levels, so instead I made a list of the species ordered by median 'body_mass_g' and
+reversed it, which is what fct_reorder and fct_rev did in R, and it gave the same
+order of 'Gentoo', 'Chinstrap', 'Adelie'. I then looped through the species in that
+order. This led to the figure changing, with 'Gentoo' being the first species in the
+legend and having a blue plot colour now, and 'Adelie' changing from blue to green.
+The data points on the plot remained the same, but the colour of the points changed.
+This is because matplotlib assigns its colours in the order the species are plotted,
+and we can see that changing the order impacts analysis and visualization.
